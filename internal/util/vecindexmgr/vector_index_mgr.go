@@ -105,9 +105,8 @@ func (mgr *vecIndexMgrImpl) IsNoTrainIndex(indexType IndexType) bool {
 }
 
 func (mgr *vecIndexMgrImpl) IsDiskANN(indexType IndexType) bool {
-	return indexType == "DISKANN"
+	return indexType == "DISKANN" || indexType == "ODINANN"
 }
-
 func (mgr *vecIndexMgrImpl) init() {
 	size := int(C.GetIndexListSize())
 	if size == 0 {

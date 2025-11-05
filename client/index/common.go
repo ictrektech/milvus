@@ -50,9 +50,9 @@ const (
 	IvfHNSW    IndexType = "IVF_HNSW"
 	AUTOINDEX  IndexType = "AUTOINDEX"
 	DISKANN    IndexType = "DISKANN"
+	ODINANN    IndexType = "ODINANN"
 	SCANN      IndexType = "SCANN"
 	MinHashLSH IndexType = "MINHASH_LSH"
-
 	// Sparse
 	SparseInverted IndexType = "SPARSE_INVERTED_INDEX"
 	SparseWAND     IndexType = "SPARSE_WAND"

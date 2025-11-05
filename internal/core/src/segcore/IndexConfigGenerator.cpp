@@ -34,6 +34,15 @@ VecIndexConfig::VecIndexConfig(const int64_t max_index_row_cout,
         index_type_ = knowhere::IndexEnum::INDEX_SPARSE_WAND_CC;
     } else if (is_sparse_) {
         index_type_ = knowhere::IndexEnum::INDEX_SPARSE_INVERTED_INDEX_CC;
+    } else if (is_in_disk_list(origin_index_type_)) {
+        // For disk indexes like ODINANN, use the original index type directly
+        // Ensure the origin index type is valid before assignment
+        if (!origin_index_type_.empty()) {
+            index_type_ = origin_index_type_;
+        } else {
+            // Fallback to default intermediate type if origin is invalid
+            index_type_ = config.get_dense_vector_intermin_index_type();
+        }
     } else {
         index_type_ = config.get_dense_vector_intermin_index_type();
     }

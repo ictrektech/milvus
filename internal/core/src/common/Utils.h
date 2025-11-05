@@ -184,6 +184,7 @@ inline std::vector<IndexType>
 DISK_INDEX_LIST() {
     static std::vector<IndexType> ret{
         knowhere::IndexEnum::INDEX_DISKANN,
+        knowhere::IndexEnum::INDEX_ODINANN,
     };
     return ret;
 }

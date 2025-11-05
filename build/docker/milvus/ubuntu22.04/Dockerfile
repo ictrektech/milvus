@@ -13,6 +13,11 @@ FROM ubuntu:jammy-20240530
 
 ARG TARGETARCH
 ARG MILVUS_ASAN_LIB
+ARG HTTP_PROXY=http://192.168.1.47:7890
+ARG HTTPS_PROXY=http://192.168.1.47:7890
+
+ENV HTTP_PROXY=${HTTP_PROXY}
+ENV HTTPS_PROXY=${HTTPS_PROXY}
 
 # Install ca-certificates first, then switch to HTTPS and install other packages
 RUN apt-get update && \
@@ -26,6 +31,8 @@ RUN apt-get update && \
 # Add Tini
 RUN curl -L -o /tini https://github.com/krallin/tini/releases/download/v0.19.0/tini-$TARGETARCH && \
     chmod +x /tini
+ENV HTTP_PROXY=""
+ENV HTTPS_PROXY=""
 
 RUN mkdir -p /milvus/bin
 COPY --chown=root:root --chmod=774 ./bin/milvus /milvus/bin/milvus
@@ -40,12 +47,12 @@ ENV LD_PRELOAD=${MILVUS_ASAN_LIB}:/milvus/lib/libjemalloc.so
 ENV MALLOC_CONF=background_thread:true
 
 # Change user to milvus
-ENV ASAN_OPTIONS=detect_leaks=0
-RUN groupadd -r milvus && useradd -r -g milvus milvus && \
-    mkdir -p /var/lib/milvus && \
-    chown -R milvus:milvus /milvus /var/lib/milvus
-ENV ASAN_OPTIONS=detect_leaks=1
-USER milvus:milvus
+#ENV ASAN_OPTIONS=detect_leaks=0
+#RUN groupadd -r milvus && useradd -r -g milvus milvus && \
+#    mkdir -p /var/lib/milvus && \
+#    chown -R milvus:milvus /milvus /var/lib/milvus
+#ENV ASAN_OPTIONS=detect_leaks=1
+#USER milvus:milvus
 
 ENTRYPOINT ["/tini", "--"]
 

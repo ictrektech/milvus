@@ -92,6 +92,7 @@ build-go:
 	@echo "Building Milvus ..."
 	@source $(PWD)/scripts/setenv.sh && \
 		mkdir -p $(INSTALL_PATH) && go env -w CGO_ENABLED="1" && \
+		GO111MODULE=on $(GO) mod tidy && \
 		CGO_LDFLAGS="$(CGO_LDFLAGS)" CGO_CFLAGS="$(CGO_CFLAGS)" GO111MODULE=on $(GO) build -pgo=$(PGO_PATH)/default.pgo -ldflags="-r $${RPATH} -X '$(OBJPREFIX).BuildTags=$(BUILD_TAGS)' -X '$(OBJPREFIX).BuildTime=$(BUILD_TIME)' -X '$(OBJPREFIX).GitCommit=$(GIT_COMMIT)' -X '$(OBJPREFIX).GoVersion=$(GO_VERSION)'" \
 		-tags $(MILVUS_GO_BUILD_TAGS) -o $(INSTALL_PATH)/milvus $(PWD)/cmd/main.go 1>/dev/null
 
@@ -230,7 +231,7 @@ integration-test: getdeps
 	@echo "Building integration tests ..."
 	@(env bash $(PWD)/scripts/run_intergration_test.sh "$(INSTALL_PATH)/gotestsum --")
 
-BUILD_TAGS = $(shell git describe --tags --always --dirty="-dev")
+BUILD_TAGS = $(shell git describe --tags --always )
 BUILD_TAGS_GPU = ${BUILD_TAGS}-gpu
 BUILD_TIME = $(shell date -u)
 GIT_COMMIT = $(shell git rev-parse --short HEAD)
