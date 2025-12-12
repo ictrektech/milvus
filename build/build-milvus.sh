@@ -3,6 +3,7 @@ set -e  # 出现错误时立即退出
 
 # 统一的 Milvus 多架构构建脚本
 # 用法: TARGETARCH=arm64 ./build.sh 或 TARGETARCH=amd64 ./build.sh
+#       BUILD_PROXY="http://custom-proxy:8080" TARGETARCH=arm64 ./build.sh
 
 # 1. 参数验证和初始化
 echo "=== Milvus 多架构构建脚本 ==="
@@ -18,6 +19,10 @@ if [ "$TARGETARCH" != "arm64" ] && [ "$TARGETARCH" != "amd64" ]; then
     echo "错误: TARGETARCH 必须是 'arm64' 或 'amd64'"
     exit 1
 fi
+
+# 设置代理环境变量
+BUILD_PROXY=${BUILD_PROXY:-http://192.168.1.202:8889}
+echo "使用代理: $BUILD_PROXY"
 
 echo "构建架构: $TARGETARCH"
 
@@ -101,8 +106,8 @@ export CARGO_REGISTRIES_CRATES_IO_INDEX=https://mirrors.ustc.edu.cn/crates.io-in
 # 执行编译
 if [ "$TARGETARCH" = "arm64" ]; then
     PLATFORM_ARCH="arm64" build/builder.sh /bin/bash -c "
-        export http_proxy=http://192.168.1.202:8889 ;
-        export https_proxy=http://192.168.1.202:8889 ;
+        export http_proxy=${BUILD_PROXY} ;
+        export https_proxy=${BUILD_PROXY} ;
         export no_proxy='localhost,127.0.0.1,192.168.*,*.ictrek.internal,gitlab.ictrek.internal' ;
         make clean ;
         make install

@@ -20,8 +20,8 @@
 set -e
 # Print commands
 set -x
-export http_proxy=http://192.168.1.202:8889
-export https_proxy=http://192.168.1.202:8889
+export http_proxy=${BUILD_PROXY:-http://192.168.1.202:8889}
+export https_proxy=${BUILD_PROXY:-http://192.168.1.202:8889}
 
 # Absolute path to the toplevel milvus directory.
 toplevel=$(dirname "$(cd "$(dirname "${0}")"; pwd)")
@@ -61,7 +61,7 @@ fi
 
 pushd "${toplevel}"
 
-docker build --network host ${BUILD_ARGS} --platform linux/${IMAGE_ARCH} -f "./build/docker/milvus/${OS_NAME}/Dockerfile" -t "${MILVUS_IMAGE_REPO}:${MILVUS_IMAGE_TAG}" .
+docker build --network host ${BUILD_ARGS} --build-arg HTTP_PROXY=${http_proxy} --build-arg HTTPS_PROXY=${https_proxy} --platform linux/${IMAGE_ARCH} -f "./build/docker/milvus/${OS_NAME}/Dockerfile" -t "${MILVUS_IMAGE_REPO}:${MILVUS_IMAGE_TAG}" .
 
 image_size=$(docker inspect ${MILVUS_IMAGE_REPO}:${MILVUS_IMAGE_TAG}  -f '{{.Size}}'| awk '{ byte =$1 /1024/1024/1024; print byte " GB" }')
 

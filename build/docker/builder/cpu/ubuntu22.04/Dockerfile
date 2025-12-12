@@ -32,8 +32,8 @@ RUN echo "target arch $TARGETARCH"
 RUN wget -qO- "https://cmake.org/files/v3.31/cmake-3.31.8-linux-`uname -m`.tar.gz" | tar --strip-components=1 -xz -C /usr/local
 
 # Install Go
-ARG HTTP_PROXY=http://192.168.1.202:8889
-ARG HTTPS_PROXY=http://192.168.1.202:8889
+ARG HTTP_PROXY
+ARG HTTPS_PROXY
 ENV GOPATH /go
 ENV GOROOT /usr/local/go
 ENV GO111MODULE on
