@@ -11,6 +11,7 @@ services:
   builder:
     image: ${IMAGE_REPO}/milvus-env:${OS_NAME}-${DATE_VERSION}
     network_mode: "host"
+    network_mode: "host"
         # Build devcontainer
     build:
       context: .
